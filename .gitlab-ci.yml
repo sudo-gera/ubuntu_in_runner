@@ -57,7 +57,7 @@
             "chmod +x /root/.vnc/xstartup",
             "curl -L https://github.com/novnc/noVNC/archive/refs/tags/v1.6.0.zip -o /novnc.zip",
             "unzip /novnc.zip",
-            "mv /noVNC* /novnc",
+            "mv ./noVNC* /novnc",
             "printf '%s\\n' 'export USER=root' >> /root/.bashrc",
             "(/novnc/utils/novnc_proxy &) ; while sleep 0.1 ; do curl 127.0.0.1:6080 && break ; done",
             "mkdir -p /root/.ssh/",
