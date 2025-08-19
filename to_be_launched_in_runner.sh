@@ -13,7 +13,7 @@ done
         export name=tmate
         mkfifo /fifo_$name
         tmux new -d -s $name
-        tmux resize-window -t $name -x 9999 -y 9999
+        tmux resize-window -t $name -x 512 -y 128
         [ -f /todo_$name ]
         tmux send -t $name -l "unset TMUX ; tmate && rm /todo_$name ; exit"$'\n'
         while sleep 0.1
@@ -22,7 +22,6 @@ done
         done
         tmux send -t $name -l 'q'
         set +x
-        tmux capture -pt $name | head -n 80
         while sleep 0.1
         do
             ( ! [ -f /todo_$name ] ) && break
@@ -34,7 +33,7 @@ done
         export name=vncserver
         mkfifo /fifo_$name
         tmux new -d -s $name
-        tmux resize-pane -t $name -x 9999 -y 9999
+        tmux resize-pane -t $name -x 512 -y 128
         tmux send -t $name -l "script -f /fifo_$name"$'\n'
         sleep 0.1
         tmux send -t $name -l "echo $name"$'\n'
@@ -47,7 +46,7 @@ done
         export name=novnc
         mkfifo /fifo_$name
         tmux new -d -s $name
-        tmux resize-pane -t $name -x 9999 -y 9999
+        tmux resize-pane -t $name -x 512 -y 128
         tmux send -t $name -l "script -f /fifo_$name"$'\n'
         sleep 0.1
         tmux send -t $name -l "echo $name"$'\n'
@@ -60,7 +59,7 @@ done
         export name=x11vnc
         mkfifo /fifo_$name
         tmux new -d -s $name
-        tmux resize-pane -t $name -x 9999 -y 9999
+        tmux resize-pane -t $name -x 512 -y 128
         tmux send -t $name -l "script -f /fifo_$name"$'\n'
         sleep 0.1
         tmux send -t $name -l "echo $name"$'\n'
@@ -73,12 +72,20 @@ done
         export name=localhostrun
         mkfifo /fifo_$name
         tmux new -d -s $name
-        tmux resize-pane -t $name -x 9999 -y 9999
+        tmux resize-pane -t $name -x 512 -y 128
         tmux send -t $name -l "script -f /fifo_$name"$'\n'
+        sleep 0.1
+        tmux send -t $name -l "script -f /output_$name"$'\n'
         sleep 0.1
         tmux send -t $name -l "echo $name"$'\n'
         tmux send -t $name -l "[ -f /todo_$name ] && "'( ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -R 80:localhost:6080 nokey@localhost.run )'" && rm /todo_$name ; exit"$'\n'
         sleep 0.1
+        ( (
+            while sleep 15
+            do
+                tail -n 40 /output_$name | sed $'s/\x1b\\[49m  \x1b\\[0m/  /g' | sed $'s/\x1b\\[7m  \x1b\\[0m/@@/g'
+            done
+        )&)
         cat /fifo_$name
     )&)
 
@@ -86,7 +93,7 @@ done
         export name=localssh
         mkfifo /fifo_$name
         tmux new -d -s $name
-        tmux resize-pane -t $name -x 9999 -y 9999
+        tmux resize-pane -t $name -x 512 -y 128
         tmux send -t $name -l "script -f /fifo_$name"$'\n'
         sleep 0.1
         tmux send -t $name -l "echo $name"$'\n'

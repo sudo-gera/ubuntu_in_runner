@@ -47,6 +47,7 @@
             "apt install -y xfce4-session",
             "apt install -y xfce4",
             "apt install -y xrdp",
+            "apt install -y xxd",
             "mkdir -p /root/.vnc/",
             "echo | vncpasswd -f > /root/.vnc/passwd",
             "chmod 600 /root/.vnc/passwd",
