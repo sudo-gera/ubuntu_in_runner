@@ -83,7 +83,12 @@ done
         ( (
             while sleep 15
             do
-                tail -n 40 /output_$name | sed $'s/\x1b\\[49m  \x1b\\[0m/  /g' | sed $'s/\x1b\\[7m  \x1b\\[0m/@@/g'
+                if [ $(( $RANDOM % 2 )) -eq 0 ]
+                then
+                    tail -n 40 /output_$name | sed $'s/\x1b\\[49m  \x1b\\[0m/  /g' | sed $'s/\x1b\\[7m  \x1b\\[0m/@@/g'
+                else
+                    tail -n 40 /output_$name | sed $'s/\x1b\\[49m  \x1b\\[0m/   /g' | sed $'s/\x1b\\[7m  \x1b\\[0m/@@@/g'
+                fi
             done
         )&)
         cat /fifo_$name
