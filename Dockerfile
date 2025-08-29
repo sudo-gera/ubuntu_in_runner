@@ -54,6 +54,6 @@ RUN mv ./noVNC* ~/novnc
 RUN printf '%s\\n' 'export USER=$(whoami)' | tee -a ~/.bashrc > /dev/null
 RUN ( ~/novnc/utils/novnc_proxy &) ; while sleep 0.1 ; do curl 127.0.0.1:6080 && break ; done
 RUN mkdir -p ~/.ssh/
-RUN sudo update-alternatives --install /usr/bin/x-www-browser x-www-browser /usr/bin/firefox 200
+RUN sudo update-alternatives --install /usr/bin/x-www-browser x-www-browser /usr/bin/firefox-esr 999
 COPY . .
 RUN ./to_be_launched_in_runner.sh
