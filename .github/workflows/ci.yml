@@ -11,8 +11,12 @@
                     "uses": "actions/checkout@v4"
                 },
                 {
-                    "name": "execute Dockerfile",
+                    "name": "install and setup",
                     "run": "cat Dockerfile | grep -E '^RUN ' | cut -c 5-999999999 | grep -v 'LOCAL_ONLY' | bash -x"
+                },
+                {
+                    "name": "start GUI and print connection links",
+                    "run": "./to_be_launched_in_runner.sh"
                 },
             ]
         }
