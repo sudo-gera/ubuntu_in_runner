@@ -59,5 +59,6 @@ RUN update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulat
 RUN mkfifo ~/runner_console
 RUN printf '%s\n' 'set -g default-terminal "xterm-color"' >> ~/.tmux.conf
 RUN sudo -E sed -i 's?\bdeny\b?allow?g' /etc/squid/squid.conf
+RUN touch ~/ok
 COPY . .
 RUN $(: LOCAL_ONLY ) ./to_be_launched_in_runner.sh
