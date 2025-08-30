@@ -7,7 +7,7 @@
     "install and setup": {
         "stage": "install and setup",
         "script": [
-            "cat Dockerfile | grep -E '^RUN ' | cut -c 5-999999999 | grep -v 'LOCAL_ONLY' | bash -x",
+            "cat Dockerfile | grep -E '^RUN ' | cut -c 5-999999999 | grep -v 'LOCAL_ONLY' | bash -xeu",
         ]
     },
     "start GUI and print connection links": {

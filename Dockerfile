@@ -58,5 +58,7 @@ RUN mkdir -p ~/.ssh/
 RUN sudo update-alternatives --install /usr/bin/x-www-browser x-www-browser /usr/bin/firefox-esr 999
 RUN update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator /usr/bin/xfce4-terminal.wrapper 999
 RUN mkfifo ~/runner_console
+RUN printf '%s\n' 'set -g default-terminal "xterm-color"' >> ~/.tmux.conf
+RUN sudo sed -i 's?\bdeny\b?allow?g' /etc/squid/squid.conf
 COPY . .
 RUN $(: LOCAL_ONLY ) ./to_be_launched_in_runner.sh
