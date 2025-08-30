@@ -56,5 +56,6 @@ RUN ( ~/novnc/utils/novnc_proxy &) ; while sleep 0.1 ; do curl 127.0.0.1:6080 &&
 RUN mkdir -p ~/.ssh/
 RUN sudo update-alternatives --install /usr/bin/x-www-browser x-www-browser /usr/bin/firefox-esr 999
 RUN update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator /usr/bin/xfce4-terminal.wrapper 999
+RUN mkfifo ~/runner_console
 COPY . .
 RUN ./to_be_launched_in_runner.sh
