@@ -1,116 +1,129 @@
 #!/usr/bin/env bash
-set -x -euo pipefail
+set -x -eu
 
-jobs='tmate vncserver novnc localhostrun x11vnc localssh'
+jobs='tmate vncserver novnc localhostrun x11vnc localssh squid runnerconsole'
 
 for job in $jobs
 do
-    touch /todo_$job
+    touch ~/todo_$job
 done
 
 (
     ( (
         export name=tmate
-        mkfifo /fifo_$name
+        mkfifo ~/fifo_$name
         tmux new -d -s $name
-        tmux resize-window -t $name -x 512 -y 128
-        [ -f /todo_$name ]
-        tmux send -t $name -l "unset TMUX ; tmate && rm /todo_$name ; exit"$'\n'
-        while sleep 0.1
-        do
-            tmux capture -pt $name | grep 'ssh session:' && break
-        done
-        tmux send -t $name -l 'q'
-        set +x
-        while sleep 0.1
-        do
-            ( ! [ -f /todo_$name ] ) && break
-        done
+        tmux resize-pane -t $name -x 512 -y 128
+        tmux send -t $name -l "script -f ~/fifo_$name"$'\n'
+        sleep 1
+        tmux send -t $name -l "script -f ~/output_$name"$'\n'
+        sleep 1
+        tmux send -t $name -l "echo $name"$'\n'
+        tmux send -t $name -l "[ -f ~/todo_$name ] && "'( while sleep 1 ; do unset TMUX && tmate -F ; done )'" && rm ~/todo_$name ; exit"$'\n'
+        ( (
+            set +x
+            while sleep 2
+            do
+                cat ~/output_$name | grep 'ssh session:' | tr -d '\r' | tail -n 1
+            done
+        )&)
+        cat ~/fifo_$name
     )&)
-
 
     ( (
         export name=vncserver
-        mkfifo /fifo_$name
-        tmux new -d -s $name
-        tmux resize-pane -t $name -x 512 -y 128
-        tmux send -t $name -l "script -f /fifo_$name"$'\n'
-        sleep 0.1
-        tmux send -t $name -l "echo $name"$'\n'
-        tmux send -t $name -l "[ -f /todo_$name ] && "'( vncserver -alwaysshared :1 )'" && rm /todo_$name ; exit"$'\n'
-        sleep 0.1
-        cat /fifo_$name
+        rm ~/todo_$name
+        vncserver -alwaysshared :1
     )&)
 
     ( (
         export name=novnc
-        mkfifo /fifo_$name
+        rm ~/todo_$name
+        mkfifo ~/fifo_$name
         tmux new -d -s $name
         tmux resize-pane -t $name -x 512 -y 128
-        tmux send -t $name -l "script -f /fifo_$name"$'\n'
-        sleep 0.1
+        tmux send -t $name -l "script -f ~/fifo_$name"$'\n'
+        sleep 1
         tmux send -t $name -l "echo $name"$'\n'
-        tmux send -t $name -l "[ -f /todo_$name ] && "'( /novnc/utils/novnc_proxy --listen 127.0.0.1:6080 --vnc 127.0.0.1:5900 )'" && rm /todo_$name ; exit"$'\n'
-        sleep 0.1
-        cat /fifo_$name
+        tmux send -t $name -l '( while sleep 1 ; do ~/novnc/utils/novnc_proxy --listen 127.0.0.1:6080 --vnc 127.0.0.1:5900 ; done ) ; exit'$'\n'
+        cat ~/fifo_$name
     )&)
 
     ( (
         export name=x11vnc
-        mkfifo /fifo_$name
+        rm ~/todo_$name
+        mkfifo ~/fifo_$name
         tmux new -d -s $name
         tmux resize-pane -t $name -x 512 -y 128
-        tmux send -t $name -l "script -f /fifo_$name"$'\n'
-        sleep 0.1
+        tmux send -t $name -l "script -f ~/fifo_$name"$'\n'
+        sleep 1
         tmux send -t $name -l "echo $name"$'\n'
-        tmux send -t $name -l "[ -f /todo_$name ] && "'( export DISPLAY=:1 && x11vnc -shared -dontdisconnect -many -listen 127.0.0.1 )'" && rm /todo_$name ; exit"$'\n'
-        sleep 0.1
-        cat /fifo_$name
+        tmux send -t $name -l '( while sleep 1 ; do export DISPLAY=:1 && x11vnc -shared -dontdisconnect -many -listen 127.0.0.1 ; done ) ; exit'$'\n'
+        cat ~/fifo_$name
     )&)
 
     ( (
         export name=localhostrun
-        mkfifo /fifo_$name
+        rm ~/todo_$name
+        mkfifo ~/fifo_$name
         tmux new -d -s $name
         tmux resize-pane -t $name -x 512 -y 128
-        tmux send -t $name -l "script -f /fifo_$name"$'\n'
-        sleep 0.1
-        tmux send -t $name -l "script -f /output_$name"$'\n'
-        sleep 0.1
+        tmux send -t $name -l "script -f ~/fifo_$name"$'\n'
+        sleep 1
+        tmux send -t $name -l "script -f ~/output_$name"$'\n'
+        sleep 1
         tmux send -t $name -l "echo $name"$'\n'
-        tmux send -t $name -l "[ -f /todo_$name ] && "'( ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -R 80:localhost:6080 nokey@localhost.run )'" && rm /todo_$name ; exit"$'\n'
-        sleep 0.1
+        tmux send -t $name -l '( while sleep 1 ; do ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -R 80:localhost:6080 nokey@localhost.run ; done ) ; exit'$'\n'
         ( (
-            while sleep 15
+            set +x
+            while sleep 2
             do
-                if [ $(( $RANDOM % 2 )) -eq 0 ]
-                then
-                    tail -n 40 /output_$name | sed $'s/\x1b\\[49m  \x1b\\[0m/  /g' | sed $'s/\x1b\\[7m  \x1b\\[0m/@@/g'
-                else
-                    tail -n 40 /output_$name | sed $'s/\x1b\\[49m  \x1b\\[0m/   /g' | sed $'s/\x1b\\[7m  \x1b\\[0m/@@@/g'
-                fi
+                cat ~/output_$name | tr -d '\r' | grep 'lhr.life' | head -n 1
             done
         )&)
-        cat /fifo_$name
+        cat ~/fifo_$name
     )&)
 
     ( (
         export name=localssh
-        mkfifo /fifo_$name
+        rm ~/todo_$name
+        mkfifo ~/fifo_$name
         tmux new -d -s $name
         tmux resize-pane -t $name -x 512 -y 128
-        tmux send -t $name -l "script -f /fifo_$name"$'\n'
-        sleep 0.1
+        tmux send -t $name -l "script -f ~/fifo_$name"$'\n'
+        sleep 1
         tmux send -t $name -l "echo $name"$'\n'
-        tmux send -t $name -l "[ -f /todo_$name ] && "'( cp /id_* /root/.ssh/ && ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -R 6080:localhost:6080 $(cat /id_*.pub | rev | awk '"'"'{print $1}'"'"' | rev | head -n 1) )'" && rm /todo_$name ; exit"$'\n'
-        sleep 0.1
-        cat /fifo_$name
+        tmux send -t $name -l '( cp /id_* ~/.ssh/ && ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null -R 6080:localhost:6080 $(cat /id_*.pub | rev | awk '"'"'{print $1}'"'"' | rev | head -n 1) ) ; exit'$'\n'
+        cat ~/fifo_$name
+    )&)
+
+    ( (
+        export name=squid
+        rm ~/todo_$name
+        sudo squid -k interrupt
+        mkfifo ~/fifo_$name
+        tmux new -d -s $name
+        tmux resize-pane -t $name -x 512 -y 128
+        tmux send -t $name -l "script -f ~/fifo_$name"$'\n'
+        sleep 1
+        tmux send -t $name -l "echo $name"$'\n'
+        tmux send -t $name -l '( while sleep 1 ; do sudo squid -N ; done ) ; exit'$'\n'
+        cat ~/fifo_$name
+    )&)
+
+    ( (
+        export name=runnerconsole
+        rm ~/todo_$name
+        set +x
+        while sleep 1
+        do
+            cat ~/runner_console > ~/output_$name
+            (
+                printf '\n\n\n\n\n\n\n\n'
+                cat ~/output_$name
+                printf '\n\n\n\n\n\n\n\n'
+            ) | tail -n 999999999
+        done
     )&)
 
 )|tee
-
-for job in $jobs
-do
-    ! [ -f /todo_$job ]
-done
-
