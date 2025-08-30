@@ -40,6 +40,7 @@ RUN sudo apt install -y xfce4
 RUN sudo apt install -y xfce4-goodies
 RUN sudo apt install -y xfce4-session
 RUN sudo apt install -y xxd
+RUN sudo apt install -y bash
 RUN mkdir -p ~/.vnc/
 RUN echo | vncpasswd -f | tee ~/.vnc/passwd > /dev/null
 RUN chmod 600 ~/.vnc/passwd
@@ -52,7 +53,7 @@ RUN curl -L https://github.com/novnc/noVNC/archive/refs/tags/v1.6.0.zip -o ~/nov
 RUN unzip ~/novnc.zip
 RUN mv ./noVNC* ~/novnc
 RUN printf '%s\\n' 'export USER=$(whoami)' | tee -a ~/.bashrc > /dev/null
-RUN ( ( echo $$ > ~/tmp_vnc_pid.txt ; ~/novnc/utils/novnc_proxy )&) && while sleep 0.1 ; do curl -sS 127.0.0.1:6080 && break ; done && kill "$(cat ~/tmp_vnc_pid.txt)"
+RUN ( bash -c 'echo $$ > ~/tmp_vnc_pid.txt ; ~/novnc/utils/novnc_proxy' &) && while sleep 0.1 ; do curl -sS 127.0.0.1:6080 && break ; done && kill "$(cat ~/tmp_vnc_pid.txt)"
 RUN mkdir -p ~/.ssh/
 RUN sudo update-alternatives --install /usr/bin/x-www-browser x-www-browser /usr/bin/firefox-esr 999
 RUN update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator /usr/bin/xfce4-terminal.wrapper 999

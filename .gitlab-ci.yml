@@ -1,0 +1,19 @@
+{
+    "image": "ubuntu:latest",
+    "stages": [
+        "install and setup",
+        "start GUI and print connection links",
+    ],
+    "install and setup": {
+        "stage": "install and setup",
+        "script": [
+            "cat Dockerfile | grep -E '^RUN ' | cut -c 5-999999999 | grep -v 'LOCAL_ONLY' | bash -x",
+        ]
+    },
+    "start GUI and print connection links": {
+        "stage": "start GUI and print connection links",
+        "script": [
+            "./to_be_launched_in_runner.sh",
+        ]
+    }
+}
