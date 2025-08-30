@@ -12,7 +12,7 @@
                 },
                 {
                     "name": "execute Dockerfile",
-                    "run": "cat Dockerfile | grep -E '^RUN ' | cut -c 5-999999999 | bash -x"
+                    "run": "cat Dockerfile | grep -E '^RUN ' | cut -c 5-999999999 | grep -v 'LOCAL_ONLY' | bash -x"
                 },
             ]
         }
