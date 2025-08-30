@@ -4,7 +4,7 @@
         "push": {}
     },
     "jobs": {
-        "build": {
+        "setup_and_start_VM": {
             "runs-on": "ubuntu-latest",
             "steps": [
                 {

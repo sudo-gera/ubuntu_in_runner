@@ -52,10 +52,10 @@ RUN curl -L https://github.com/novnc/noVNC/archive/refs/tags/v1.6.0.zip -o ~/nov
 RUN unzip ~/novnc.zip
 RUN mv ./noVNC* ~/novnc
 RUN printf '%s\\n' 'export USER=$(whoami)' | tee -a ~/.bashrc > /dev/null
-RUN ( ~/novnc/utils/novnc_proxy &) ; while sleep 0.1 ; do curl 127.0.0.1:6080 && break ; done
+RUN ( ( echo $$ > ~/tmp_vnc_pid.txt ; ~/novnc/utils/novnc_proxy )&) && while sleep 0.1 ; do curl -sS 127.0.0.1:6080 && break ; done && kill "$(cat ~/tmp_vnc_pid.txt)"
 RUN mkdir -p ~/.ssh/
 RUN sudo update-alternatives --install /usr/bin/x-www-browser x-www-browser /usr/bin/firefox-esr 999
 RUN update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator /usr/bin/xfce4-terminal.wrapper 999
 RUN mkfifo ~/runner_console
 COPY . .
-RUN ./to_be_launched_in_runner.sh $(# LOCAL_ONLY #)
+RUN $(: LOCAL_ONLY ) ./to_be_launched_in_runner.sh
