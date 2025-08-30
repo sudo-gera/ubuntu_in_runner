@@ -25,7 +25,6 @@ RUN sudo -E apt install -y passwd
 RUN sudo -E apt install -y python3
 RUN sudo -E apt install -y scrcpy
 RUN sudo -E apt install -y squid
-RUN sudo -E apt install -y sudo -E
 RUN sudo -E apt install -y systemd
 RUN sudo -E apt install -y systemd-sysv
 RUN sudo -E apt install -y tigervnc-common
