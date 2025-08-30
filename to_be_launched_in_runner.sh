@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -x -euo pipefail
+set -x -eu
 
 jobs='tmate vncserver novnc localhostrun x11vnc localssh squid'
 
