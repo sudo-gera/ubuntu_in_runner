@@ -16,7 +16,7 @@
                 },
                 {
                     "name": "start GUI and print connection links",
-                    "run": "./to_be_launched_in_runner.sh"
+                    "run": "bash -xeu ./to_be_launched_in_runner.sh"
                 },
             ]
         }
