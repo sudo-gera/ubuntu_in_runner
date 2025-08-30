@@ -100,13 +100,14 @@ done
     ( (
         export name=squid
         rm ~/todo_$name
+        sudo squid -k interrupt
         mkfifo ~/fifo_$name
         tmux new -d -s $name
         tmux resize-pane -t $name -x 512 -y 128
         tmux send -t $name -l "script -f ~/fifo_$name"$'\n'
         sleep 1
         tmux send -t $name -l "echo $name"$'\n'
-        tmux send -t $name -l '( while sleep 1 ; do squid -N ; done ) ; exit'$'\n'
+        tmux send -t $name -l '( while sleep 1 ; do sudo squid -N ; done ) ; exit'$'\n'
         cat ~/fifo_$name
     )&)
 
@@ -117,9 +118,11 @@ done
         while sleep 1
         do
             cat ~/runner_console > ~/output_$name
-            printf '\n\n\n'
-            cat ~/output_$name
-            printf '\n\n\n'
+            (
+                printf '\n\n\n\n\n\n\n\n'
+                cat ~/output_$name
+                printf '\n\n\n\n\n\n\n\n'
+            ) | tail -n 999999999
         done
     )&)
 
