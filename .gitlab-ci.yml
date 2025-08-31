@@ -6,8 +6,7 @@
     "install and print connection links": {
         "stage": "install and print connection links",
         "script": [
-            "cat Dockerfile | grep -E '^RUN ' | cut -c 5-999999999 | grep -v 'LOCAL_ONLY' | tee /dev/stderr | bash -xeu",
-            "cat ~/ok",
+            "cat Dockerfile | grep -E '^RUN ' | cut -c 5-999999999 | grep -v 'LOCAL_ONLY' | tee /dev/stderr | bash -xeu ; cat ~/ok",
             "bash -xeu ./to_be_launched_in_runner.sh",
         ]
     },

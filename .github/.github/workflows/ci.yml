@@ -12,7 +12,7 @@
                 },
                 {
                     "name": "install and setup",
-                    "run": "cat Dockerfile | grep -E '^RUN ' | cut -c 5-999999999 | grep -v 'LOCAL_ONLY' | bash -xeu"
+                    "run": "cat Dockerfile | grep -E '^RUN ' | cut -c 5-999999999 | grep -v 'LOCAL_ONLY' | tee /dev/stderr | bash -xeu ; cat ~/ok"
                 },
                 {
                     "name": "start GUI and print connection links",

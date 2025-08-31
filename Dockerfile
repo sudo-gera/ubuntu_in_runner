@@ -6,6 +6,7 @@ RUN DEBIAN_FRONTEND=noninteractive sudo -E apt-get -y install keyboard-configura
 RUN sudo -E apt install -y software-properties-common
 RUN sudo -E add-apt-repository ppa:mozillateam/ppa
 RUN sudo -E apt install -y adb
+RUN sudo -E apt install -y bash
 RUN sudo -E apt install -y bind9-host
 RUN sudo -E apt install -y curl
 RUN sudo -E apt install -y dbus
@@ -36,11 +37,10 @@ RUN sudo -E apt install -y tmux
 RUN sudo -E apt install -y unzip
 RUN sudo -E apt install -y wget
 RUN sudo -E apt install -y x11vnc
-RUN sudo -E apt install -y xfce4 || :
+RUN sudo -E apt install -y xfce4
 RUN sudo -E apt install -y xfce4-goodies
 RUN sudo -E apt install -y xfce4-session
 RUN sudo -E apt install -y xxd
-RUN sudo -E apt install -y bash
 RUN mkdir -p ~/.vnc/
 RUN echo | vncpasswd -f | tee ~/.vnc/passwd > /dev/null
 RUN chmod 600 ~/.vnc/passwd
