@@ -2,6 +2,7 @@ FROM ubuntu:latest
 RUN sudo -E apt update || apt update
 RUN sudo -E apt install -y sudo || apt install -y sudo
 RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC sudo -E apt-get -y install tzdata
+RUN DEBIAN_FRONTEND=noninteractive sudo -E apt-get install keyboard-configuration
 RUN sudo -E apt install -y software-properties-common
 RUN sudo -E add-apt-repository ppa:mozillateam/ppa
 RUN sudo -E apt install -y adb
@@ -35,7 +36,7 @@ RUN sudo -E apt install -y tmux
 RUN sudo -E apt install -y unzip
 RUN sudo -E apt install -y wget
 RUN sudo -E apt install -y x11vnc
-RUN sudo -E apt install -y xfce4
+RUN sudo -E apt install -y xfce4 || :
 RUN sudo -E apt install -y xfce4-goodies
 RUN sudo -E apt install -y xfce4-session
 RUN sudo -E apt install -y xxd
