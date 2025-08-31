@@ -2,7 +2,7 @@ FROM ubuntu:latest
 RUN sudo -E apt update || apt update
 RUN sudo -E apt install -y sudo || apt install -y sudo
 RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC sudo -E apt-get -y install tzdata
-RUN DEBIAN_FRONTEND=noninteractive sudo -E apt-get install keyboard-configuration
+RUN DEBIAN_FRONTEND=noninteractive sudo -E apt-get -y install keyboard-configuration
 RUN sudo -E apt install -y software-properties-common
 RUN sudo -E add-apt-repository ppa:mozillateam/ppa
 RUN sudo -E apt install -y adb
