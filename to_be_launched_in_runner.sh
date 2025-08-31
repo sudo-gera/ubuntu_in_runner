@@ -100,7 +100,7 @@ done
     ( (
         export name=squid
         rm ~/todo_$name
-        sudo squid -k interrupt
+        sudo squid -k interrupt || :
         mkfifo ~/fifo_$name
         tmux new -d -s $name
         tmux resize-pane -t $name -x 512 -y 128

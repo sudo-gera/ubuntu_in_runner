@@ -5,6 +5,8 @@ RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC sudo -E apt-get -y install tzdata
 RUN DEBIAN_FRONTEND=noninteractive sudo -E apt-get -y install keyboard-configuration
 RUN sudo -E apt install -y software-properties-common
 RUN sudo -E add-apt-repository ppa:mozillateam/ppa
+RUN sudo -E add-apt-repository ppa:zhangsongcui3371/fastfetch
+RUN sudo -E apt update
 RUN sudo -E apt install -y adb
 RUN sudo -E apt install -y bash
 RUN sudo -E apt install -y bind9-host
@@ -12,6 +14,7 @@ RUN sudo -E apt install -y curl
 RUN sudo -E apt install -y dbus
 RUN sudo -E apt install -y dbus-x11
 RUN sudo -E apt install -y dnsutils
+RUN sudo -E apt install -y fastfetch
 RUN sudo -E apt install -y firefox-esr
 RUN sudo -E apt install -y git
 RUN sudo -E apt install -y gpg
@@ -20,6 +23,7 @@ RUN sudo -E apt install -y iputils-ping
 RUN sudo -E apt install -y lsb-release
 RUN sudo -E apt install -y lsof
 RUN sudo -E apt install -y nano
+RUN sudo -E apt install -y neofetch
 RUN sudo -E apt install -y net-tools
 RUN sudo -E apt install -y openssh-client
 RUN sudo -E apt install -y openssh-server
