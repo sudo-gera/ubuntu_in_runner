@@ -63,4 +63,3 @@ RUN sudo -E sed -i 's?\bdeny\b?allow?g' /etc/squid/squid.conf
 RUN touch ~/ok
 COPY . .
 RUN $(: LOCAL_ONLY ) ./to_be_launched_in_runner.sh
-
